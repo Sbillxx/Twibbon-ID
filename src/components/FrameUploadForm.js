@@ -1,0 +1,63 @@
+import React, { useState } from "react";
+import "./FrameUploadForm.css";
+
+const API_URL = "http://localhost:5000/api/twibbons";
+
+const FrameUploadForm = ({ onUploaded }) => {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!name || !file) {
+      setError("Name and file are required!");
+      return;
+    }
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("file", file);
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      setSuccess("Frame uploaded!");
+      setName("");
+      setDescription("");
+      setFile(null);
+      if (onUploaded) onUploaded();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form className="frame-upload-form" onSubmit={handleSubmit}>
+      <h2>Upload Twibbon Frame</h2>
+      <label>Frame Name*</label>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+      <label>Description / Aspect Ratio</label>
+      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <label>Frame Image*</label>
+      <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} required />
+      <button type="submit" disabled={loading}>
+        {loading ? "Uploading..." : "Upload"}
+      </button>
+      {error && <div className="form-error">{error}</div>}
+      {success && <div className="form-success">{success}</div>}
+    </form>
+  );
+};
+
+export default FrameUploadForm;
