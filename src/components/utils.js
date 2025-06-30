@@ -7,3 +7,13 @@ export function createImage(url) {
     img.src = url;
   });
 }
+
+export function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Ganti spasi dengan -
+    .replace(/[^a-z0-9-]/g, "") // Hapus karakter non-alfanumerik
+    .replace(/-+/g, "-"); // Ganti multiple - dengan single -
+}

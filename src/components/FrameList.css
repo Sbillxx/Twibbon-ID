@@ -102,99 +102,103 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.25);
-  z-index: 9999;
+  background: rgba(30, 40, 80, 0.18);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .edit-modal {
+  max-width: 380px;
+  width: 90vw;
+  margin: 0 auto;
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(21, 208, 233, 0.13), 0 2px 8px rgba(59, 79, 168, 0.1);
-  padding: 2.2rem 2rem 1.7rem 2rem;
-  min-width: 320px;
-  max-width: 95vw;
-  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  align-items: center;
 }
+
 .edit-modal h3 {
-  margin: 0 0 0.7rem 0;
-  color: #232946;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  color: #222;
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
+
 .edit-modal form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
 }
+
 .edit-modal label {
   font-weight: 600;
-  color: #232946;
+  color: #444;
   margin-bottom: 0.3rem;
   font-size: 1rem;
   letter-spacing: 0.2px;
+  display: block;
 }
+
 .edit-modal input[type="text"] {
+  width: 100%;
   padding: 0.7rem 0.9rem;
-  border-radius: 7px;
-  border: 1.5px solid #c3c3c3;
+  border-radius: 8px;
+  border: 1.5px solid #ccc;
   font-size: 1.05rem;
   margin-bottom: 0.1rem;
   background: #f7faff;
   transition: border 0.2s;
+  box-sizing: border-box;
 }
+
 .edit-modal input[type="text"]:focus {
-  border: 1.5px solid #3b7be8;
+  border: 1.5px solid #4f46e5;
   outline: none;
   background: #fff;
 }
+
 .edit-modal-actions {
   display: flex;
-  gap: 0.9rem;
-  justify-content: flex-end;
-  margin-top: 0.7rem;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.2rem;
 }
+
 .edit-cancel {
-  background: #eee;
-  color: #232946;
+  background: #f3f4f6;
+  color: #444;
   border: none;
-  border-radius: 7px;
-  padding: 0.6rem 1.3rem;
-  font-size: 1.05rem;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
   transition: background 0.2s;
 }
+
 .edit-cancel:hover {
-  background: #ccc;
+  background: #e5e7eb;
 }
+
 .edit-save {
-  background: linear-gradient(90deg, #3b4fa8 0%, #15d0e9 100%);
+  background: #e11d48;
   color: #fff;
   border: none;
-  border-radius: 7px;
-  padding: 0.6rem 1.5rem;
-  font-size: 1.08rem;
-  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(21, 208, 233, 0.1);
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.2s;
 }
-.edit-save:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-@media (max-width: 600px) {
-  .edit-modal {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
-    min-width: 0;
-  }
+
+.edit-save:hover {
+  background: #be123c;
 }
 
 .frame-edit,

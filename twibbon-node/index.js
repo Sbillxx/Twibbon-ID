@@ -4,12 +4,29 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2");
+const session = require("express-session");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+// Session middleware
+app.use(
+  session({
+    secret: "twibbon_secret_key_123", // ganti dengan secret yang lebih aman di production
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 },
+  })
+);
 
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 
@@ -90,6 +107,82 @@ app.put("/api/twibbons/:id", (req, res) => {
 
 // Serve uploaded files
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// --- AUTH ENDPOINTS ---
+// Login endpoint
+app.post("/api/auth/login", (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: "Username and password required" });
+  db.query("SELECT * FROM sysuser WHERE username = ? AND is_active = 1", [username], async (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!rows.length) return res.status(401).json({ error: "User not found or inactive" });
+    const user = rows[0];
+    // Cek hash
+    let passwordMatch = false;
+    if (user.password.startsWith("$2b$")) {
+      // Sudah hash bcrypt
+      passwordMatch = await bcrypt.compare(password, user.password);
+    } else {
+      // Masih plain text (migrasi awal)
+      passwordMatch = password === user.password;
+    }
+    if (!passwordMatch) return res.status(401).json({ error: "Wrong password" });
+    // Set session
+    req.session.userId = user.id;
+    req.session.username = user.username;
+    // Update last_login
+    db.query("UPDATE sysuser SET last_login = NOW() WHERE id = ?", [user.id]);
+    res.json({ success: true, username: user.username });
+  });
+});
+
+// Cek status login
+app.get("/api/auth/check", (req, res) => {
+  if (req.session && req.session.userId) {
+    res.json({ loggedIn: true, username: req.session.username });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+// Logout endpoint
+app.post("/api/auth/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
+});
+
+// Ganti username & password
+app.post("/api/auth/change-credentials", async (req, res) => {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const { username, oldPassword, newPassword } = req.body;
+  if (!username || !oldPassword || !newPassword) {
+    return res.status(400).json({ error: "Semua field wajib diisi" });
+  }
+  db.query("SELECT * FROM sysuser WHERE id = ?", [req.session.userId], async (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!rows.length) return res.status(404).json({ error: "User not found" });
+    const user = rows[0];
+    // Cek password lama
+    let passwordMatch = false;
+    if (user.password.startsWith("$2b$")) {
+      passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    } else {
+      passwordMatch = oldPassword === user.password;
+    }
+    if (!passwordMatch) return res.status(401).json({ error: "Password lama salah" });
+    // Hash password baru
+    const hash = await bcrypt.hash(newPassword, 10);
+    db.query("UPDATE sysuser SET username = ?, password = ?, updated_at = NOW() WHERE id = ?", [username, hash, user.id], (err2) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+      // Update session username
+      req.session.username = username;
+      res.json({ success: true });
+    });
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Twibbon backend running on http://localhost:${PORT}`);

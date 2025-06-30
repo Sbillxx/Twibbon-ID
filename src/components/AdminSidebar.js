@@ -29,6 +29,15 @@ const AdminSidebar = ({ current, onNavigate, open, onClose }) => {
         >
           List Frames
         </li>
+        <li
+          data-icon="👤"
+          className={current === "account" ? "active" : ""}
+          onClick={() => {
+            onNavigate("account");
+          }}
+        >
+          Akun
+        </li>
       </ul>
     </nav>
   );

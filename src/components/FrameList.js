@@ -12,6 +12,7 @@ const FrameList = ({ refresh }) => {
   const [editDesc, setEditDesc] = useState("");
   const [saving, setSaving] = useState(false);
   const [previewImg, setPreviewImg] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
 
   const fetchFrames = async () => {
     setLoading(true);
@@ -31,8 +32,8 @@ const FrameList = ({ refresh }) => {
     // eslint-disable-next-line
   }, [refresh]);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this frame?")) return;
+  const handleDelete = async (id, confirmed) => {
+    if (!confirmed) return;
     try {
       await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       fetchFrames();
@@ -88,7 +89,7 @@ const FrameList = ({ refresh }) => {
               <button className="frame-edit" onClick={() => openEdit(frame)}>
                 Edit
               </button>
-              <button className="frame-delete" onClick={() => handleDelete(frame.id)}>
+              <button className="frame-delete" onClick={() => setDeleteId(frame.id)}>
                 Delete
               </button>
             </div>
@@ -123,6 +124,28 @@ const FrameList = ({ refresh }) => {
               &times;
             </button>
             <img src={previewImg} alt="Preview" className="preview-img" />
+          </div>
+        </div>
+      )}
+      {deleteId && (
+        <div className="edit-modal-backdrop" onClick={() => setDeleteId(null)}>
+          <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Anda yakin akan menghapus frame twibbon ini?</h3>
+            <div className="edit-modal-actions">
+              <button className="edit-cancel" onClick={() => setDeleteId(null)}>
+                Batal
+              </button>
+              <button
+                className="edit-save"
+                style={{ background: "#e11d48", color: "#fff" }}
+                onClick={async () => {
+                  await handleDelete(deleteId, true);
+                  setDeleteId(null);
+                }}
+              >
+                Hapus
+              </button>
+            </div>
           </div>
         </div>
       )}

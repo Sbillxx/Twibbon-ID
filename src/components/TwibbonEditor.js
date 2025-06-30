@@ -29,6 +29,9 @@ const TwibbonEditor = ({ twibbonSrc }) => {
   const [aspectRatio, setAspectRatio] = useState(1);
   const [frameDimensions, setFrameDimensions] = useState({ width: 1080, height: 1080 });
   const [initialZoom, setInitialZoom] = useState(1);
+  const [showSharePopup, setShowSharePopup] = useState(false);
+  const [finalTwibbonUrl, setFinalTwibbonUrl] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   // Detect aspect ratio of twibbon frame
   useEffect(() => {
@@ -95,10 +98,15 @@ const TwibbonEditor = ({ twibbonSrc }) => {
       ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
       // 5. Download
+      const dataUrl = canvas.toDataURL("image/png");
+      setFinalTwibbonUrl(dataUrl);
       const link = document.createElement("a");
       link.download = "twibbon-final.png";
-      link.href = canvas.toDataURL("image/png");
+      link.href = dataUrl;
       link.click();
+
+      // Show share popup
+      setShowSharePopup(true);
 
       // Success animation
       const button = document.querySelector(".download-button");
@@ -112,6 +120,24 @@ const TwibbonEditor = ({ twibbonSrc }) => {
       setIsLoading(false);
     }
   };
+
+  // Share logic
+  const shareUrl = window.location.href;
+  const shareText = `Cek twibbon keren ini!`;
+  function shareToWhatsApp() {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
+  }
+  function shareToFacebook() {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+  }
+  function shareToInstagram() {
+    window.open("https://instagram.com/", "_blank");
+  }
+  function copyLink() {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   // Get aspect ratio label for display
   const getAspectRatioLabel = () => {
@@ -180,6 +206,34 @@ const TwibbonEditor = ({ twibbonSrc }) => {
           )}
         </button>
       </div>
+
+      {/* Share Popup */}
+      {showSharePopup && finalTwibbonUrl && (
+        <div className="share-popup-overlay">
+          <div className="share-popup">
+            <button className="close-popup" onClick={() => setShowSharePopup(false)}>
+              &times;
+            </button>
+            <h3>Bagikan Link Twibbon Ini</h3>
+            <img src={finalTwibbonUrl} alt="Hasil Twibbon" className="twibbon-result-preview" />
+            <div className="share-popup-buttons">
+              <button onClick={shareToWhatsApp} className="share-btn wa">
+                WhatsApp
+              </button>
+              <button onClick={shareToFacebook} className="share-btn fb">
+                Facebook
+              </button>
+              <button onClick={shareToInstagram} className="share-btn ig">
+                Instagram
+              </button>
+              <button onClick={copyLink} className="share-btn copy">
+                {copied ? "Copied!" : "Copy Link"}
+              </button>
+            </div>
+            <div className="share-popup-desc">Link yang dibagikan adalah link halaman twibbon ini, bukan file gambar.</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
