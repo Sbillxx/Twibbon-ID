@@ -24,19 +24,19 @@ function TwibbonDetail() {
   }, [slug]);
 
   const shareUrl = window.location.href;
-  const shareText = `Cek twibbon keren ini!`;
+  const shareText = `Cek twibbon keren ini!${twibbon && twibbon.description ? "\n" + twibbon.description : ""}`;
 
   function shareToWhatsApp() {
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
   }
   function shareToFacebook() {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, "_blank");
   }
   function shareToTwitter() {
     window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, "_blank");
   }
   function copyLink() {
-    navigator.clipboard.writeText(shareUrl);
+    navigator.clipboard.writeText(shareText + " " + shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -79,7 +79,7 @@ function TwibbonDetail() {
             }}
           />
         </div>
-        <div style={{ fontSize: "1.1rem", color: "#fff", marginBottom: "0.5rem" }}>{twibbon.description || ""}</div>
+        <div className="twibbon-detail-desc">{twibbon.description || ""}</div>
         {/* Share buttons */}
         {/* <div style={{ display: "flex", gap: "0.7rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "0.7rem" }}>
           <button onClick={shareToWhatsApp} style={{ background: "#25d366", color: "#fff", border: "none", borderRadius: 8, padding: "0.5rem 1rem", fontWeight: 600, cursor: "pointer" }}>
@@ -100,7 +100,7 @@ function TwibbonDetail() {
         </Link>
       </div>
       <div className="editor-section">
-        <TwibbonEditor twibbonSrc={"http://localhost:5000" + twibbon.url} />
+        <TwibbonEditor twibbonSrc={"http://localhost:5000" + twibbon.url} twibbonName={twibbon.name} twibbonSlug={slugify(twibbon.name)} />
       </div>
     </div>
   );

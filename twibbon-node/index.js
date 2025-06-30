@@ -184,6 +184,37 @@ app.post("/api/auth/change-credentials", async (req, res) => {
   });
 });
 
+// Tambah endpoint feedback
+app.post("/api/feedback", (req, res) => {
+  const { message, name } = req.body;
+  if (!message || !message.trim()) return res.status(400).json({ error: "Feedback tidak boleh kosong" });
+  const sender = name && name.trim() ? name.trim() : "Anonim";
+  db.query("INSERT INTO feedback (message, name, created_at) VALUES (?, ?, NOW())", [message, sender], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    db.query("SELECT * FROM feedback WHERE id = ?", [result.insertId], (err2, rows) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+      res.json(rows[0]);
+    });
+  });
+});
+
+// Ambil semua feedback (untuk admin panel)
+app.get("/api/feedback", (req, res) => {
+  db.query("SELECT * FROM feedback ORDER BY created_at DESC", (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+// Hapus feedback
+app.delete("/api/feedback/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  db.query("DELETE FROM feedback WHERE id = ?", [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Twibbon backend running on http://localhost:${PORT}`);
 });

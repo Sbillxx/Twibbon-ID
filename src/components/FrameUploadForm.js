@@ -43,7 +43,7 @@ const FrameUploadForm = ({ onUploaded }) => {
   };
 
   return (
-    <form className="frame-upload-form" onSubmit={handleSubmit}>
+    <form style={{ maxWidth: "100%", width: "100%", margin: "2rem 0", background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.08)", padding: "24px 5px" }} className="frame-upload-form" onSubmit={handleSubmit}>
       <h2>Upload Twibbon Frame</h2>
       <label>Frame Name*</label>
       <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />

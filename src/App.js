@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import TwibbonEditor from "./components/TwibbonEditor";
 import AdminPage from "./components/AdminPage";
 import TwibbonDetail from "./components/TwibbonDetail";
@@ -7,9 +7,55 @@ import AdminLogin from "./components/AdminLogin";
 import RequireAuth from "./components/RequireAuth";
 import Spinner from "./components/Spinner";
 import { slugify } from "./components/utils";
+import FeedbackWidget from "./components/FeedbackWidget";
 import "./App.css";
 
-function App() {
+function TwibbonDescription({ text }) {
+  const [expanded, setExpanded] = useState(false);
+  const lineClampStyle = {
+    display: "-webkit-box",
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "pre-line",
+  };
+  if (!text) return null;
+  const isLong = text.split("\n").length > 4 || text.length > 200;
+  return (
+    <>
+      <span className="twibbon-description" style={!expanded && isLong ? lineClampStyle : { whiteSpace: "pre-line" }}>
+        {text}
+      </span>
+      {isLong && (
+        <button
+          type="button"
+          className="read-more-btn"
+          onClick={(e) => {
+            e.preventDefault();
+            setExpanded((v) => !v);
+          }}
+          style={{
+            background: "none",
+            border: "none",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "0.9em",
+            marginTop: 4,
+            padding: 0,
+            textDecoration: "underline",
+            display: "block",
+          }}
+        >
+          {expanded ? "Show less" : "Read more"}
+        </button>
+      )}
+    </>
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +69,10 @@ function App() {
       });
   }, []);
 
+  const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
+
   return (
-    <Router>
+    <>
       <Routes>
         <Route path="/!/admin-login" element={<AdminLogin />} />
         <Route
@@ -56,7 +104,7 @@ function App() {
                         <img src={"http://localhost:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
-                          <span className="twibbon-description">{twibbon.description}</span>
+                          <TwibbonDescription text={twibbon.description} />
                         </div>
                       </Link>
                     ))}
@@ -88,6 +136,15 @@ function App() {
           }
         />
       </Routes>
+      {isUserPage && <FeedbackWidget />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   );
 }

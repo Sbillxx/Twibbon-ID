@@ -3,6 +3,51 @@ import "./FrameList.css";
 
 const API_URL = "http://localhost:5000/api/twibbons";
 
+function FrameDescription({ text }) {
+  const [expanded, setExpanded] = useState(false);
+  const lineClampStyle = {
+    display: "-webkit-box",
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "pre-line",
+  };
+  if (!text) return null;
+  const isLong = text.split("\n").length > 4 || text.length > 200;
+  return (
+    <>
+      <span className="frame-desc" style={!expanded && isLong ? lineClampStyle : { whiteSpace: "pre-line" }}>
+        {text}
+      </span>
+      {isLong && (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          <button
+            type="button"
+            className="read-more-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              setExpanded((v) => !v);
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "black",
+              cursor: "pointer",
+              fontSize: "0.9em",
+              marginTop: 4,
+              padding: 0,
+              textDecoration: "underline",
+            }}
+          >
+            {expanded ? "Show less" : "Read more"}
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 const FrameList = ({ refresh }) => {
   const [frames, setFrames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +128,7 @@ const FrameList = ({ refresh }) => {
             <img src={`http://localhost:5000${frame.url}`} alt={frame.name} className="frame-thumb" onClick={() => setPreviewImg(`http://localhost:5000${frame.url}`)} style={{ cursor: "pointer" }} title="Click to preview" />
             <div className="frame-info">
               <div className="frame-name">{frame.name}</div>
-              <div className="frame-desc">{frame.description}</div>
+              <FrameDescription text={frame.description} />
             </div>
             <div className="frame-actions">
               <button className="frame-edit" onClick={() => openEdit(frame)}>

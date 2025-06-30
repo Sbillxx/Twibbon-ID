@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import "./TwibbonEditor.css";
-import { createImage } from "./utils";
+import { createImage, slugify } from "./utils";
 
 const getCroppedImg = async (imageSrc, cropPixels) => {
   const image = await createImage(imageSrc);
@@ -19,7 +19,7 @@ const getCroppedImg = async (imageSrc, cropPixels) => {
   });
 };
 
-const TwibbonEditor = ({ twibbonSrc }) => {
+const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -101,7 +101,7 @@ const TwibbonEditor = ({ twibbonSrc }) => {
       const dataUrl = canvas.toDataURL("image/png");
       setFinalTwibbonUrl(dataUrl);
       const link = document.createElement("a");
-      link.download = "twibbon-final.png";
+      link.download = `twibbon-${twibbonSlug || (twibbonName ? slugify(twibbonName) : "final")}.png`;
       link.href = dataUrl;
       link.click();
 

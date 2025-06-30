@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import FrameUploadForm from "./FrameUploadForm";
 import FrameList from "./FrameList";
+import AdminFeedback from "./AdminFeedback";
 import "./AdminPage.css";
+import { useNavigate } from "react-router-dom";
 
 const EyeIcon = ({ shown, onClick }) => (
   <span
@@ -44,6 +46,7 @@ const EyeIcon = ({ shown, onClick }) => (
 );
 
 const AdminPage = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState("upload");
   const [refresh, setRefresh] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -59,6 +62,8 @@ const AdminPage = () => {
   const [accLoading, setAccLoading] = useState(false);
   const [accError, setAccError] = useState("");
   const [accSuccess, setAccSuccess] = useState("");
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // (Opsional) Prefill username dari session/localStorage jika ada
   React.useEffect(() => {
@@ -102,6 +107,13 @@ const AdminPage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", { method: "POST", credentials: "include" });
+    } catch {}
+    navigate("/!/admin-login");
+  };
+
   return (
     <div className="admin-layout">
       <button className={`admin-hamburger flat${sidebarOpen ? " sidebar-open" : ""}`} onClick={() => setSidebarOpen(true)} aria-label="Open sidebar">
@@ -117,12 +129,17 @@ const AdminPage = () => {
         }}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onLogout={() => setShowLogoutModal(true)}
       />
       <main className="admin-main">
-        {page === "upload" && <FrameUploadForm onUploaded={() => setRefresh((r) => !r)} />}
+        {page === "upload" && (
+          <div>
+            <FrameUploadForm onUploaded={() => setRefresh((r) => !r)} />
+          </div>
+        )}
         {page === "list" && <FrameList refresh={refresh} />}
         {page === "account" && (
-          <div className="admin-account-form-wrapper">
+          <div style={{ maxWidth: "100%", width: "100%", margin: "2rem 0", background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.08)", padding: "24px 5px" }}>
             <h2>Ganti Username & Password</h2>
             <form className="admin-account-form" onSubmit={handleAccountChange}>
               <div className="form-group">
@@ -150,6 +167,22 @@ const AdminPage = () => {
                 {accLoading ? "Loading..." : "Ganti Akun"}
               </button>
             </form>
+          </div>
+        )}
+        {page === "feedback" && <AdminFeedback />}
+        {showLogoutModal && (
+          <div className="edit-modal-backdrop" onClick={() => setShowLogoutModal(false)}>
+            <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+              <h3>Anda yakin ingin logout dari admin panel?</h3>
+              <div className="edit-modal-actions">
+                <button className="edit-cancel" onClick={() => setShowLogoutModal(false)}>
+                  Batal
+                </button>
+                <button className="edit-save" style={{ background: "#e11d48", color: "#fff" }} onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>

@@ -388,3 +388,13 @@
   text-decoration: none !important;
   color: whitesmoke;
 }
+
+.twibbon-detail-desc {
+  max-width: 650px;
+  margin: 0 auto 0.5rem auto;
+  text-align: justify;
+  padding: 0 16px;
+  font-size: 1.1rem;
+  color: #fff;
+  word-break: break-word;
+}
