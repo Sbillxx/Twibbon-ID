@@ -48,7 +48,13 @@ const FrameUploadForm = ({ onUploaded }) => {
       <label>Frame Name*</label>
       <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
       <label>Description / Aspect Ratio</label>
-      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        rows={3}
+        style={{ resize: "vertical", fontFamily: "inherit", fontSize: "1rem", padding: "0.6rem", borderRadius: 6, border: "1px solid #c3c3c3" }}
+        placeholder="Tulis deskripsi frame di sini... (bisa multi-baris)"
+      />
       <label>Frame Image*</label>
       <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} required />
       <button type="submit" disabled={loading}>

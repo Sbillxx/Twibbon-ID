@@ -149,7 +149,13 @@ const FrameList = ({ refresh }) => {
               <label>Frame Name</label>
               <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} required />
               <label>Description / Aspect Ratio</label>
-              <input type="text" value={editDesc} onChange={(e) => setEditDesc(e.target.value)} />
+              <textarea
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
+                rows={3}
+                style={{ resize: "vertical", fontFamily: "inherit", fontSize: "1rem", padding: "0.6rem", borderRadius: 6, border: "1px solid #c3c3c3" }}
+                placeholder="Tulis deskripsi frame di sini... (bisa multi-baris)"
+              />
               <div className="edit-modal-actions">
                 <button type="button" onClick={closeEdit} className="edit-cancel">
                   Cancel

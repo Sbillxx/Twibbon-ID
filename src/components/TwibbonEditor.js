@@ -28,7 +28,7 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const [fileName, setFileName] = useState("");
   const [aspectRatio, setAspectRatio] = useState(1);
   const [frameDimensions, setFrameDimensions] = useState({ width: 1080, height: 1080 });
-  const [initialZoom, setInitialZoom] = useState(1);
+  const [zoomReady, setZoomReady] = useState(false);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [finalTwibbonUrl, setFinalTwibbonUrl] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -52,13 +52,19 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
     if (!imageSrc) return;
     const img = new window.Image();
     img.onload = () => {
-      // Universal COVER: gambar selalu nutupin cropper (full grid)
       const minZoom = Math.max(frameDimensions.width / img.width, frameDimensions.height / img.height);
       setZoom(minZoom);
-      setCrop({ x: 0, y: 0 }); // center
+      setZoomReady(true); // trigger crop center
     };
     img.src = imageSrc;
   }, [imageSrc, aspectRatio, frameDimensions]);
+
+  useEffect(() => {
+    if (zoomReady) {
+      setCrop({ x: 0, y: 0 });
+      setZoomReady(false);
+    }
+  }, [zoomReady]);
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -177,13 +183,20 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
         <div
           className="crop-container"
           style={{
-            aspectRatio: aspectRatio,
-            maxHeight: aspectRatio > 1 ? "400px" : "500px",
-            maxWidth: aspectRatio < 1 ? "300px" : "400px",
+            aspectRatio: `${frameDimensions.width} / ${frameDimensions.height}`,
+            width: "100%",
+            maxWidth: "400px",
+            margin: "0 auto",
+            background: "#000",
+            position: "relative",
+            borderRadius: "20px",
+            boxShadow: "0 15px 30px rgba(0,0,0,0.3)",
+            border: "3px solid rgba(255,255,255,0.3)",
+            overflow: "hidden",
           }}
         >
           <Cropper image={imageSrc} crop={crop} zoom={zoom} aspect={aspectRatio} onCropChange={setCrop} onZoomChange={setZoom} onCropComplete={onCropComplete} showGrid={true} />
-          <img src={twibbonSrc} alt="twibbon" className="twibbon-overlay" />
+          <img src={twibbonSrc} alt="twibbon" className="twibbon-overlay" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", top: 0, left: 0, zIndex: 10, pointerEvents: "none", borderRadius: "17px" }} />
         </div>
       )}
 
