@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import TwibbonEditor from "./components/TwibbonEditor";
 import AdminPage from "./components/AdminPage";
@@ -58,15 +58,40 @@ function AppRoutes() {
   const location = useLocation();
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const retryInterval = useRef(null);
 
-  useEffect(() => {
+  const fetchTwibbons = () => {
     setLoading(true);
+    setError("");
     fetch("http://localhost:5000/api/twibbons")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => {
         setTwibbons(data);
         setLoading(false);
+        setError("");
+        if (retryInterval.current) {
+          clearInterval(retryInterval.current);
+          retryInterval.current = null;
+        }
+      })
+      .catch((err) => {
+        setError("Maaf, layanan sedang tidak tersedia. Silakan coba lagi nanti.");
+        setLoading(false);
+        if (!retryInterval.current) {
+          retryInterval.current = setInterval(fetchTwibbons, 5000);
+        }
       });
+  };
+
+  useEffect(() => {
+    fetchTwibbons();
+    return () => {
+      if (retryInterval.current) clearInterval(retryInterval.current);
+    };
   }, []);
 
   const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
@@ -97,6 +122,10 @@ function AppRoutes() {
                 <h2 className="selection-title">Pilih Twibbon Kamu</h2>
                 {loading ? (
                   <Spinner size={56} />
+                ) : error ? (
+                  <div className="error-message" style={{ color: "red", textAlign: "center", margin: "2rem 0" }}>
+                    {error}
+                  </div>
                 ) : (
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
