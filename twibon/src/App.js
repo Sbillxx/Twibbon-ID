@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import TwibbonEditor from "./components/TwibbonEditor";
 import AdminPage from "./components/AdminPage";
@@ -8,6 +8,7 @@ import RequireAuth from "./components/RequireAuth";
 import Spinner from "./components/Spinner";
 import { slugify } from "./components/utils";
 import FeedbackWidget from "./components/FeedbackWidget";
+import { useBackendStatus } from "./components/BackendStatusContext";
 import "./App.css";
 
 function TwibbonDescription({ text }) {
@@ -58,18 +59,62 @@ function AppRoutes() {
   const location = useLocation();
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const retryInterval = useRef(null);
+  const { maintenance, setMaintenance } = useBackendStatus();
 
-  useEffect(() => {
+  const fetchTwibbons = () => {
     setLoading(true);
+    setError("");
     fetch("http://localhost:5000/api/twibbons")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => {
         setTwibbons(data);
         setLoading(false);
+        setError("");
+        setMaintenance(false);
+        if (retryInterval.current) {
+          clearInterval(retryInterval.current);
+          retryInterval.current = null;
+        }
+      })
+      .catch((err) => {
+        setError("Maaf, layanan sedang tidak tersedia. Silakan coba lagi nanti.");
+        setLoading(false);
+        setMaintenance(true);
+        if (!retryInterval.current) {
+          retryInterval.current = setInterval(fetchTwibbons, 5000);
+        }
       });
+  };
+
+  useEffect(() => {
+    fetchTwibbons();
   }, []);
 
   const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
+
+  if (maintenance) {
+    return (
+      <div
+        style={{
+          background: "#fff",
+          color: "#222",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2rem",
+          flexDirection: "column",
+        }}
+      >
+        <b>Oops, maaf sepertinya sistem sedang dalam perbaikan, silahkan coba lagi nanti🙏😊</b>
+      </div>
+    );
+  }
 
   return (
     <>

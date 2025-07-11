@@ -398,3 +398,71 @@
   color: #fff;
   word-break: break-word;
 }
+
+/* Tambahan responsivitas */
+@media (max-width: 900px) {
+  .app-header {
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+  }
+  .twibbon-selection {
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+  .editor-section {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .App {
+    padding: 0.5rem;
+  }
+  .app-header {
+    margin-bottom: 1.2rem;
+  }
+  .app-title {
+    font-size: 1.5rem;
+  }
+  .app-subtitle {
+    font-size: 0.95rem;
+  }
+  .selection-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .twibbon-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    max-width: 98vw;
+    margin: 0 auto 1.2rem;
+  }
+  .twibbon-option {
+    min-height: 160px;
+    padding: 0.5rem 0.2rem 1rem 0.2rem;
+    border-radius: 12px;
+  }
+  .twibbon-preview {
+    height: 90px;
+    max-width: 90vw;
+  }
+  .welcome-message {
+    margin: 2rem auto;
+    padding: 0 0.5rem;
+  }
+  .welcome-content {
+    padding: 1.2rem 0.5rem;
+  }
+  .feature-list {
+    gap: 0.5rem;
+  }
+  .feature-item {
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 901px) {
+  .twibbon-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
