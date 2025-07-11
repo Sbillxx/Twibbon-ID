@@ -6,9 +6,10 @@ const path = require("path");
 const mysql = require("mysql2");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
@@ -21,7 +22,7 @@ app.use(express.json());
 // Session middleware
 app.use(
   session({
-    secret: "twibbon_secret_key_123", // ganti dengan secret yang lebih aman di production
+    secret: process.env.SESSION_SECRET || "twibbon_secret_key_123", // ganti dengan secret yang lebih aman di production
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 },
@@ -32,10 +33,10 @@ const UPLOADS_DIR = path.join(__dirname, "uploads");
 
 // MySQL connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "twibbon_db",
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASS || "",
+  database: process.env.DB_NAME || "twibbon_db",
 });
 
 db.connect((err) => {
@@ -107,6 +108,14 @@ app.put("/api/twibbons/:id", (req, res) => {
 
 // Serve uploaded files
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// Serve static files from React
+app.use(express.static(path.join(__dirname, "../twibon/build")));
+
+// Fallback ke index.html untuk SPA
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../twibon/build", "index.html"));
+});
 
 // --- AUTH ENDPOINTS ---
 // Login endpoint
