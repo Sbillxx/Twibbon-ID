@@ -44,6 +44,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASS || "",
   database: process.env.DB_NAME || "twibbon_db",
+  port: process.env.DB_PORT || 3306, // <-- ini harus ada!
 });
 app.use(
   session({
