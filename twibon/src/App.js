@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import TwibbonEditor from "./components/TwibbonEditor";
 import AdminPage from "./components/AdminPage";
 import TwibbonDetail from "./components/TwibbonDetail";
 import AdminLogin from "./components/AdminLogin";
@@ -7,7 +8,6 @@ import RequireAuth from "./components/RequireAuth";
 import Spinner from "./components/Spinner";
 import { slugify } from "./components/utils";
 import FeedbackWidget from "./components/FeedbackWidget";
-
 import "./App.css";
 
 function TwibbonDescription({ text }) {
@@ -58,41 +58,16 @@ function AppRoutes() {
   const location = useLocation();
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [maintenance, setMaintenance] = useState(false);
-  const retryInterval = useRef(null);
 
-  const fetchTwibbons = () => {
+  useEffect(() => {
     setLoading(true);
-    setError("");
     fetch("http://localhost:5000/api/twibbons")
-      .then((res) => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         setTwibbons(data);
         setLoading(false);
-        setError("");
-        setMaintenance(false);
-        if (retryInterval.current) {
-          clearInterval(retryInterval.current);
-          retryInterval.current = null;
-        }
-      })
-      .catch((err) => {
-        setError("Maaf, layanan sedang tidak tersedia. Silakan coba lagi nanti.");
-        setLoading(false);
-        setMaintenance(true);
-        if (!retryInterval.current) {
-          retryInterval.current = setInterval(fetchTwibbons, 5000);
-        }
       });
-  };
-
-  useEffect(() => {
-    fetchTwibbons();
-  }, [fetchTwibbons]);
+  }, []);
 
   const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
 
@@ -122,15 +97,6 @@ function AppRoutes() {
                 <h2 className="selection-title">Pilih Twibbon Kamu</h2>
                 {loading ? (
                   <Spinner size={56} />
-                ) : error || maintenance ? (
-                  <div className="error-message">
-                    <div className="error-icon">⚠️</div>
-                    <h3 className="error-title">Oops, ada masalah!</h3>
-                    <p className="error-text">{error || "Maaf sepertinya sistem sedang dalam perbaikan, silahkan coba lagi nanti 🙏😊"}</p>
-                    <button className="retry-button" onClick={fetchTwibbons}>
-                      🔄 Coba Lagi
-                    </button>
-                  </div>
                 ) : (
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
