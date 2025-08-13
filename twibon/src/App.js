@@ -65,7 +65,7 @@ function AppRoutes() {
   const fetchTwibbons = () => {
     setLoading(true);
     setError("");
-    fetch("http://110.239.95.173:9323/api/twibbons")
+    fetch("http://localhost:5000/api/twibbons")
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
@@ -135,7 +135,7 @@ function AppRoutes() {
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
                       <Link to={`/${slugify(twibbon.name)}`} key={twibbon.id} className="twibbon-option">
-                        <img src={"http://110.239.95.173:9323" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
+                        <img src={"http://localhost:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
                           <TwibbonDescription text={twibbon.description} />

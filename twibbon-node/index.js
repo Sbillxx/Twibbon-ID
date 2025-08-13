@@ -5,12 +5,11 @@ const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2");
 const session = require("express-session");
-const FileStore = require("session-file-store")(session);
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 9323;
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
@@ -23,19 +22,10 @@ app.use(express.json());
 // Session middleware
 app.use(
   session({
-    store: new FileStore({
-      path: path.join(__dirname, "sessions"),
-      ttl: 86400,
-      reapInterval: 3600,
-    }),
     secret: process.env.SESSION_SECRET || "twibbon_secret_key_123",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
+    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 },
   })
 );
 
