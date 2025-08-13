@@ -6,32 +6,16 @@ function FeedbackWidget() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
-  const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    if (open) fetchFeedbacks();
     if (!open) {
       setSuccess("");
       setError("");
     }
-    // eslint-disable-next-line
   }, [open]);
-
-  const fetchFeedbacks = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(FEEDBACK_API);
-      const data = await res.json();
-      setFeedbacks(Array.isArray(data) ? data : []);
-    } catch (e) {
-      setFeedbacks([]);
-    }
-    setLoading(false);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +36,6 @@ function FeedbackWidget() {
       setMessage("");
       setName("");
       setSuccess("Feedback terkirim, terima kasih!");
-      fetchFeedbacks();
     } catch (e) {
       setError("Gagal mengirim feedback");
     }

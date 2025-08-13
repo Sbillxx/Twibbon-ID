@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
-import TwibbonEditor from "./components/TwibbonEditor";
 import AdminPage from "./components/AdminPage";
 import TwibbonDetail from "./components/TwibbonDetail";
 import AdminLogin from "./components/AdminLogin";

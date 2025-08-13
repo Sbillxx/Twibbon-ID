@@ -6,40 +6,19 @@ import Spinner from "./Spinner";
 
 function TwibbonDetail() {
   const { slug } = useParams();
-  const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [twibbon, setTwibbon] = useState(null);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:5000/api/twibbons")
       .then((res) => res.json())
       .then((data) => {
-        setTwibbons(data);
         const found = data.find((t) => slugify(t.name) === slug);
         setTwibbon(found || null);
         setLoading(false);
       });
   }, [slug]);
-
-  const shareUrl = window.location.href;
-  const shareText = `Cek twibbon keren ini!${twibbon && twibbon.description ? "\n" + twibbon.description : ""}`;
-
-  function shareToWhatsApp() {
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
-  }
-  function shareToFacebook() {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, "_blank");
-  }
-  function shareToTwitter() {
-    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, "_blank");
-  }
-  function copyLink() {
-    navigator.clipboard.writeText(shareText + " " + shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
 
   if (loading)
     return (
