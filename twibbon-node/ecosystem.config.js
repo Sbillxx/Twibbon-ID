@@ -7,14 +7,14 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "1G",
-      port: 5000,
+      port: 9323,
       env: {
         NODE_ENV: "development",
-        PORT: 5000,
+        PORT: 9323,
       },
       env_production: {
         NODE_ENV: "production",
-        PORT: 5000,
+        PORT: 9323,
       },
     },
     // App lain bisa ditambah di sini

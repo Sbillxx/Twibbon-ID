@@ -65,7 +65,7 @@ function AppRoutes() {
   const fetchTwibbons = () => {
     setLoading(true);
     setError("");
-    fetch("http://110.239.95.173:5000/api/twibbons")
+    fetch("http://110.239.95.173:9323/api/twibbons")
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
