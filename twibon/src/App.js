@@ -96,25 +96,6 @@ function AppRoutes() {
 
   const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
 
-  if (maintenance) {
-    return (
-      <div
-        style={{
-          background: "#fff",
-          color: "#222",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "2rem",
-          flexDirection: "column",
-        }}
-      >
-        <b>Oops, maaf sepertinya sistem sedang dalam perbaikan, silahkan coba lagi nanti🙏😊</b>
-      </div>
-    );
-  }
-
   return (
     <>
       <Routes>
@@ -141,11 +122,11 @@ function AppRoutes() {
                 <h2 className="selection-title">Pilih Twibbon Kamu</h2>
                 {loading ? (
                   <Spinner size={56} />
-                ) : error ? (
+                ) : error || maintenance ? (
                   <div className="error-message">
                     <div className="error-icon">⚠️</div>
                     <h3 className="error-title">Oops, ada masalah!</h3>
-                    <p className="error-text">{error}</p>
+                    <p className="error-text">{error || "Maaf sepertinya sistem sedang dalam perbaikan, silahkan coba lagi nanti 🙏😊"}</p>
                     <button className="retry-button" onClick={fetchTwibbons}>
                       🔄 Coba Lagi
                     </button>
