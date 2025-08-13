@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const mysql = require("mysql2");
 const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
@@ -22,10 +23,19 @@ app.use(express.json());
 // Session middleware
 app.use(
   session({
-    secret: "twibbon_secret_key_123", // ganti dengan secret yang lebih aman di production
+    store: new FileStore({
+      path: path.join(__dirname, "sessions"),
+      ttl: 86400,
+      reapInterval: 3600,
+    }),
+    secret: process.env.SESSION_SECRET || "twibbon_secret_key_123",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   })
 );
 
@@ -46,12 +56,6 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME || "twibbon_db",
   port: process.env.DB_PORT || 3306, // <-- ini harus ada!
 });
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "twibbon_secret_key_123",
-    // ...
-  })
-);
 
 db.connect((err) => {
   if (err) throw err;
@@ -230,6 +234,7 @@ app.delete("/api/feedback/:id", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Twibbon backend running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Twibbon backend running on http://0.0.0.0:${PORT}`);
+  console.log(`Server accessible from: http://110.239.95.173:${PORT}`);
 });
