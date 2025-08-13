@@ -4,7 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "deploy": "bash deploy.sh",
+    "pm2:start": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop twibbon-backend",
+    "pm2:restart": "pm2 restart twibbon-backend",
+    "pm2:logs": "pm2 logs twibbon-backend",
+    "pm2:status": "pm2 status"
   },
   "keywords": [],
   "author": "",
