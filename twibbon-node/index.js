@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" ? ["https://twibbon-id.vercel.app"] : "http://localhost:3000",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -224,7 +224,6 @@ app.delete("/api/feedback/:id", (req, res) => {
   });
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Twibbon backend running on http://0.0.0.0:${PORT}`);
-  console.log(`Server accessible from: http://110.239.95.173:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Twibbon backend running on http://localhost:${PORT}`);
 });
