@@ -7,7 +7,7 @@ import RequireAuth from "./components/RequireAuth";
 import Spinner from "./components/Spinner";
 import { slugify } from "./components/utils";
 import FeedbackWidget from "./components/FeedbackWidget";
-import { useBackendStatus } from "./components/BackendStatusContext";
+
 import "./App.css";
 
 function TwibbonDescription({ text }) {
@@ -59,8 +59,8 @@ function AppRoutes() {
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [maintenance, setMaintenance] = useState(false);
   const retryInterval = useRef(null);
-  const { maintenance, setMaintenance } = useBackendStatus();
 
   const fetchTwibbons = () => {
     setLoading(true);
