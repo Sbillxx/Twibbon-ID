@@ -9,6 +9,12 @@ mkdir -p logs
 echo "📦 Installing dependencies..."
 npm install --production
 
+# Install dotenv if not exists
+if ! npm list dotenv > /dev/null 2>&1; then
+    echo "📦 Installing dotenv..."
+    npm install dotenv
+fi
+
 # Setup environment file
 echo "🔧 Setting up environment variables..."
 if [ -f "env.production" ]; then
