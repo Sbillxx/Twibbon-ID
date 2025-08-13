@@ -6,10 +6,10 @@ import Spinner from "./Spinner";
 
 function TwibbonDetail() {
   const { slug } = useParams();
-  const [twibbons, setTwibbons] = useState([]);
+  const [twibbons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [twibbon, setTwibbon] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const [copied] = useState(false);
 
   useEffect(() => {
     setLoading(true);

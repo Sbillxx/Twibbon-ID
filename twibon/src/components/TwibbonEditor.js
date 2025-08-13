@@ -3,21 +3,7 @@ import Cropper from "react-easy-crop";
 import "./TwibbonEditor.css";
 import { createImage, slugify } from "./utils";
 
-const getCroppedImg = async (imageSrc, cropPixels) => {
-  const image = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  canvas.width = cropPixels.width;
-  canvas.height = cropPixels.height;
-  const ctx = canvas.getContext("2d");
-
-  ctx.drawImage(image, cropPixels.x, cropPixels.y, cropPixels.width, cropPixels.height, 0, 0, cropPixels.width, cropPixels.height);
-
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(URL.createObjectURL(blob));
-    }, "image/png");
-  });
-};
+// Function removed - unused
 
 const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const [imageSrc, setImageSrc] = useState(null);

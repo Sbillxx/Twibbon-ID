@@ -92,7 +92,7 @@ function AppRoutes() {
 
   useEffect(() => {
     fetchTwibbons();
-  }, []);
+  }, [fetchTwibbons]);
 
   const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
 
