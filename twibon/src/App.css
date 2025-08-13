@@ -466,3 +466,25 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+@media (max-width: 600px) {
+  .App {
+    padding: 0.2rem !important;
+  }
+  .app-header {
+    margin-bottom: 0.7rem !important;
+    padding: 0 0.2rem !important;
+  }
+  .editor-section {
+    max-width: 100vw !important;
+    width: 100% !important;
+    padding: 0.2rem !important;
+    border-radius: 12px !important;
+    box-sizing: border-box;
+  }
+  .twibbon-detail-desc {
+    max-width: 98vw !important;
+    padding: 0 4vw !important;
+    font-size: 1rem !important;
+  }
+}

@@ -556,3 +556,19 @@
     padding: 0.45rem 0.7rem;
   }
 }
+
+@media (max-width: 600px) {
+  .editor-container {
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+    padding: 0.7rem !important;
+    border-radius: 10px !important;
+    box-sizing: border-box;
+  }
+  .crop-container,
+  .controls {
+    max-width: 98vw !important;
+    width: 100% !important;
+  }
+}
