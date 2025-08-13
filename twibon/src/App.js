@@ -141,11 +141,20 @@ function AppRoutes() {
                 <h2 className="selection-title">Pilih Twibbon Kamu</h2>
                 {loading ? (
                   <Spinner size={56} />
+                ) : error ? (
+                  <div className="error-message">
+                    <div className="error-icon">⚠️</div>
+                    <h3 className="error-title">Oops, ada masalah!</h3>
+                    <p className="error-text">{error}</p>
+                    <button className="retry-button" onClick={fetchTwibbons}>
+                      🔄 Coba Lagi
+                    </button>
+                  </div>
                 ) : (
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
                       <Link to={`/${slugify(twibbon.name)}`} key={twibbon.id} className="twibbon-option">
-                        <img src={"http://localhost:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
+                        <img src={"http://110.239.95.173:9323" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
                           <TwibbonDescription text={twibbon.description} />
