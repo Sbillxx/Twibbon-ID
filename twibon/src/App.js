@@ -88,7 +88,9 @@ function AppRoutes() {
           element={
             <div className="App">
               <div className="app-header">
-                <h1 className="app-title">🎭 Twibbon Kami</h1>
+                <div className="logo-container">
+                  <img src="/logoIDFrame-white.png" alt="IDFrame Logo" className="app-logo" />
+                </div>
                 <p className="app-subtitle">COBAIN DEHH, TWIBBONIZE MAH DAH BAYAR BJIRR😂😂</p>
               </div>
 

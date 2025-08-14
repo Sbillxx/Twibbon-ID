@@ -39,7 +39,10 @@ function TwibbonDetail() {
   return (
     <div className="App">
       <div className="app-header">
-        <h1 className="app-title">🎭 {twibbon.name}</h1>
+        <div className="logo-container">
+          <img src="/logoIDFrame-white.png" alt="IDFrame Logo" className="app-logo" />
+        </div>
+        <h1 className="app-title">{twibbon.name}</h1>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "1.2rem 0 0.5rem 0" }}>
           <img
             src={"http://localhost:5000" + twibbon.url}
