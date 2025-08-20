@@ -13,11 +13,25 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "https://localhost:3000",
+      "https://127.0.0.1:3000",
+      "http://www.idrisiyyah.com",
+      "https://www.idrisiyyah.com",
+      "*", // Allow all origins for development
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
+
+// Handle CORS preflight requests
+app.options("*", cors());
 
 // Session middleware
 app.use(

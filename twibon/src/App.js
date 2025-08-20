@@ -60,7 +60,7 @@ function AppRoutes() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:5000/api/twibbons")
+    fetch("http://www.idrisiyyah.com:5000/api/twibbons")
       .then((res) => res.json())
       .then((data) => {
         setTwibbons(data);
@@ -102,7 +102,7 @@ function AppRoutes() {
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
                       <Link to={`/${slugify(twibbon.name)}`} key={twibbon.id} className="twibbon-option">
-                        <img src={"http://localhost:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
+                        <img src={"http://www.idrisiyyah.com:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
                           <TwibbonDescription text={twibbon.description} />
