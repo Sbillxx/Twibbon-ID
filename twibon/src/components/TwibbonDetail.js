@@ -6,26 +6,28 @@ import Spinner from "./Spinner";
 
 function TwibbonDetail() {
   const { slug } = useParams();
-  const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [twibbon, setTwibbon] = useState(null);
+<<<<<<< HEAD
   // const [copied, setCopied] = useState(false);
   const API_URL = process.env.REACT_APP_API_URL;
   const UPLOAD_API = `${API_URL}/api/upload`;
   
+=======
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
 
   useEffect(() => {
     setLoading(true);
     fetch(`${API_URL}/api/twibbons`)
       .then((res) => res.json())
       .then((data) => {
-        setTwibbons(data);
         const found = data.find((t) => slugify(t.name) === slug);
         setTwibbon(found || null);
         setLoading(false);
       });
   }, [slug]);
 
+<<<<<<< HEAD
   console.log("TWIBBON DATA: ", twibbons);
 
   // const shareUrl = window.location.href;
@@ -61,6 +63,8 @@ function TwibbonDetail() {
   //   setTimeout(() => setCopied(false), 2000);
   // }
 
+=======
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
   if (loading)
     return (
       <div
@@ -87,6 +91,7 @@ function TwibbonDetail() {
   return (
     <div className="App">
       <div className="app-header">
+<<<<<<< HEAD
         <h1 className="app-title">🎭 {twibbon.name}</h1>
         <div
           style={{
@@ -96,6 +101,13 @@ function TwibbonDetail() {
             margin: "1.2rem 0 0.5rem 0",
           }}
         >
+=======
+        <div className="logo-container">
+          <img src="/logoIDFrame-white.png" alt="IDFrame Logo" className="app-logo" />
+        </div>
+        <h1 className="app-title">{twibbon.name}</h1>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "1.2rem 0 0.5rem 0" }}>
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
           <img
             src={`${API_URL}${twibbon.url}`}
             alt={twibbon.name}

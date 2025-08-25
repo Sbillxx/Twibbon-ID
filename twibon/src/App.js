@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -6,6 +7,10 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
+=======
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
 import AdminPage from "./components/AdminPage";
 import TwibbonDetail from "./components/TwibbonDetail";
 import AdminLogin from "./components/AdminLogin";
@@ -72,7 +77,11 @@ function AppRoutes() {
 
   useEffect(() => {
     setLoading(true);
+<<<<<<< HEAD
     fetch(`${API_URL}/api/twibbons`)
+=======
+    fetch("http://www.idrisiyyah.com:5000/api/twibbons")
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
       .then((res) => res.json())
       .then((data) => {
         setTwibbons(data);
@@ -102,10 +111,17 @@ function AppRoutes() {
           element={
             <div className="App">
               <div className="app-header">
+<<<<<<< HEAD
                 <h1 className="app-title">🎭 Twibbon Kami</h1>
                 <p className="app-subtitle">
                   COBAIN DEHH, TWIBBONIZE MAH DAH BAYAR BJIRR😂😂
                 </p>
+=======
+                <div className="logo-container">
+                  <img src="/logoIDFrame-white.png" alt="IDFrame Logo" className="app-logo" />
+                </div>
+                <p className="app-subtitle">COBAIN DEHH, TWIBBONIZE MAH DAH BAYAR BJIRR😂😂</p>
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
               </div>
 
               <div className="twibbon-selection">
@@ -115,6 +131,7 @@ function AppRoutes() {
                 ) : (
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
+<<<<<<< HEAD
                       <Link
                         to={`/${slugify(twibbon.name)}`}
                         key={twibbon.id}
@@ -125,6 +142,10 @@ function AppRoutes() {
                           alt={twibbon.name}
                           className="twibbon-preview"
                         />
+=======
+                      <Link to={`/${slugify(twibbon.name)}`} key={twibbon.id} className="twibbon-option">
+                        <img src={"http://www.idrisiyyah.com:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
+>>>>>>> f6568d0a1e99f9d2d5986853f8d9c4b50577ca62
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
                           <TwibbonDescription text={twibbon.description} />
