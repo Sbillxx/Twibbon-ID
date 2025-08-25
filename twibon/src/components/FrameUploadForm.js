@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./FrameUploadForm.css";
 
-const API_URL = "http://localhost:5000/api/twibbons";
+
+const API_URL = process.env.REACT_APP_API_URL;
+const FEEDBACK_API = `${API_URL}/api/feedback`;
+const UPLOAD_API = `${API_URL}/api/upload`;
+
 
 const FrameUploadForm = ({ onUploaded }) => {
   const [name, setName] = useState("");
@@ -25,7 +29,7 @@ const FrameUploadForm = ({ onUploaded }) => {
     formData.append("description", description);
     formData.append("file", file);
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${API_URL}/api/twibbons`, {
         method: "POST",
         body: formData,
       });

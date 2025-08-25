@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-const FEEDBACK_API = "http://localhost:5000/api/feedback";
+const API_URL = process.env.REACT_APP_API_URL;
+const FEEDBACK_API = `${API_URL}/api/feedback`;
+console.log("API_URL =", API_URL);
 
 function AdminFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);

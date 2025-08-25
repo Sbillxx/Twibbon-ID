@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const FEEDBACK_API = "http://localhost:5000/api/feedback";
+const API_URL = process.env.REACT_APP_API_URL;
+const FEEDBACK_API = `${API_URL}/api/feedback`;
 
 function FeedbackWidget() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,7 +23,7 @@ function FeedbackWidget() {
   }, [open]);
 
   const fetchFeedbacks = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const res = await fetch(FEEDBACK_API);
       const data = await res.json();
@@ -30,7 +31,7 @@ function FeedbackWidget() {
     } catch (e) {
       setFeedbacks([]);
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -59,6 +60,7 @@ function FeedbackWidget() {
     setSending(false);
   };
 
+  console.log("FEEDBACK: ", feedbacks);
   return (
     <>
       {/* Floating Button */}
@@ -85,7 +87,16 @@ function FeedbackWidget() {
         aria-label="Kirim Feedback"
       >
         {/* SVG chat icon */}
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
       </button>
@@ -137,14 +148,30 @@ function FeedbackWidget() {
             >
               &times;
             </button>
-            <h3 style={{ margin: "0 0 12px 0", textAlign: "center", color: "#4267b2" }}>💬 Feedback</h3>
+            <h3
+              style={{
+                margin: "0 0 12px 0",
+                textAlign: "center",
+                color: "#4267b2",
+              }}
+            >
+              💬 Feedback
+            </h3>
             <form onSubmit={handleSubmit} style={{ marginBottom: 18 }}>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tulis feedback kamu di sini..."
                 rows={3}
-                style={{ width: "100%", borderRadius: 8, border: "1.5px solid #bcd", padding: 8, resize: "vertical", fontSize: 15, boxSizing: "border-box" }}
+                style={{
+                  width: "100%",
+                  borderRadius: 8,
+                  border: "1.5px solid #bcd",
+                  padding: 8,
+                  resize: "vertical",
+                  fontSize: 15,
+                  boxSizing: "border-box",
+                }}
                 maxLength={500}
                 required
               />
@@ -153,7 +180,15 @@ function FeedbackWidget() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Nama (opsional, kosong = Anonim)"
-                style={{ width: "100%", borderRadius: 8, border: "1.5px solid #bcd", padding: 8, marginTop: 8, fontSize: 15, boxSizing: "border-box" }}
+                style={{
+                  width: "100%",
+                  borderRadius: 8,
+                  border: "1.5px solid #bcd",
+                  padding: 8,
+                  marginTop: 8,
+                  fontSize: 15,
+                  boxSizing: "border-box",
+                }}
                 maxLength={40}
               />
               <button
@@ -177,8 +212,16 @@ function FeedbackWidget() {
               >
                 {sending ? "Mengirim..." : "Kirim Feedback"}
               </button>
-              {error && <div style={{ color: "#e11d48", marginTop: 6, fontSize: 14 }}>{error}</div>}
-              {success && <div style={{ color: "#22c55e", marginTop: 6, fontSize: 14 }}>{success}</div>}
+              {error && (
+                <div style={{ color: "#e11d48", marginTop: 6, fontSize: 14 }}>
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div style={{ color: "#22c55e", marginTop: 6, fontSize: 14 }}>
+                  {success}
+                </div>
+              )}
             </form>
             {/* <div style={{ maxHeight: 180, overflowY: "auto", borderRadius: 8, background: "#f6f8fa", padding: 8, border: "1px solid #e0e7ef" }}>
               {loading ? (

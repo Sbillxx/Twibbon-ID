@@ -62,6 +62,7 @@ const AdminPage = () => {
   const [accLoading, setAccLoading] = useState(false);
   const [accError, setAccError] = useState("");
   const [accSuccess, setAccSuccess] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -85,7 +86,7 @@ const AdminPage = () => {
     }
     setAccLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/change-credentials", {
+      const res = await fetch(`${API_URL}/api/auth/change-credentials`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -109,7 +110,7 @@ const AdminPage = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/auth/logout", { method: "POST", credentials: "include" });
+      await fetch(`${API_URL}/api/auth/logout`, { method: "POST", credentials: "include" });
     } catch {}
     navigate("/!/admin-login");
   };

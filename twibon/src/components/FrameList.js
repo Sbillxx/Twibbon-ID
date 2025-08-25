@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./FrameList.css";
 
-const API_URL = "http://localhost:5000/api/twibbons";
+const API_URL = process.env.REACT_APP_API_URL;
+const UPLOAD_API = `${API_URL}/api/upload`;
 
 function FrameDescription({ text }) {
   const [expanded, setExpanded] = useState(false);
@@ -62,9 +63,10 @@ const FrameList = ({ refresh }) => {
   const fetchFrames = async () => {
     setLoading(true);
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(`${API_URL}/api/twibbons`);
       const data = await res.json();
-      setFrames(data);
+      console.log("API response:", data);
+      setFrames(Array.isArray(data) ? data : data.frames || []);
     } catch (err) {
       setError("Failed to fetch frames");
     } finally {
@@ -125,7 +127,7 @@ const FrameList = ({ refresh }) => {
       <div className="frame-list-grid">
         {frames.map((frame) => (
           <div className="frame-card" key={frame.id}>
-            <img src={`http://localhost:5000${frame.url}`} alt={frame.name} className="frame-thumb" onClick={() => setPreviewImg(`http://localhost:5000${frame.url}`)} style={{ cursor: "pointer" }} title="Click to preview" />
+            <img src={`${API_URL}${frame.url}`} alt={frame.name} className="frame-thumb" onClick={() => setPreviewImg(`${API_URL}${frame.url}`)} style={{ cursor: "pointer" }} title="Click to preview" />
             <div className="frame-info">
               <div className="frame-name">{frame.name}</div>
               <FrameDescription text={frame.description} />

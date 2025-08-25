@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import TwibbonEditor from "./TwibbonEditor";
 import { slugify } from "./utils";
@@ -9,11 +9,14 @@ function TwibbonDetail() {
   const [twibbons, setTwibbons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [twibbon, setTwibbon] = useState(null);
-  const [copied, setCopied] = useState(false);
+  // const [copied, setCopied] = useState(false);
+  const API_URL = process.env.REACT_APP_API_URL;
+  const UPLOAD_API = `${API_URL}/api/upload`;
+  
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:5000/api/twibbons")
+    fetch(`${API_URL}/api/twibbons`)
       .then((res) => res.json())
       .then((data) => {
         setTwibbons(data);
@@ -23,27 +26,51 @@ function TwibbonDetail() {
       });
   }, [slug]);
 
-  const shareUrl = window.location.href;
-  const shareText = `Cek twibbon keren ini!${twibbon && twibbon.description ? "\n" + twibbon.description : ""}`;
+  console.log("TWIBBON DATA: ", twibbons);
 
-  function shareToWhatsApp() {
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
-  }
-  function shareToFacebook() {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, "_blank");
-  }
-  function shareToTwitter() {
-    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, "_blank");
-  }
-  function copyLink() {
-    navigator.clipboard.writeText(shareText + " " + shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
+  // const shareUrl = window.location.href;
+  // const shareText = `Cek twibbon keren ini!${
+  //   twibbon && twibbon.description ? "\n" + twibbon.description : ""
+  // }`;
+
+  // function shareToWhatsApp() {
+  //   window.open(
+  //     `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`,
+  //     "_blank"
+  //   );
+  // }
+  // function shareToFacebook() {
+  //   window.open(
+  //     `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+  //       shareUrl
+  //     )}&quote=${encodeURIComponent(shareText)}`,
+  //     "_blank"
+  //   );
+  // }
+  // function shareToTwitter() {
+  //   window.open(
+  //     `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+  //       shareUrl
+  //     )}&text=${encodeURIComponent(shareText)}`,
+  //     "_blank"
+  //   );
+  // }
+  // function copyLink() {
+  //   navigator.clipboard.writeText(shareText + " " + shareUrl);
+  //   setCopied(true);
+  //   setTimeout(() => setCopied(false), 2000);
+  // }
 
   if (loading)
     return (
-      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          minHeight: "60vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Spinner size={56} />
       </div>
     );
@@ -61,9 +88,16 @@ function TwibbonDetail() {
     <div className="App">
       <div className="app-header">
         <h1 className="app-title">🎭 {twibbon.name}</h1>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "1.2rem 0 0.5rem 0" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            margin: "1.2rem 0 0.5rem 0",
+          }}
+        >
           <img
-            src={"http://localhost:5000" + twibbon.url}
+            src={`${API_URL}${twibbon.url}`}
             alt={twibbon.name}
             style={{
               maxWidth: "180px",
@@ -100,7 +134,11 @@ function TwibbonDetail() {
         </Link>
       </div>
       <div className="editor-section">
-        <TwibbonEditor twibbonSrc={"http://localhost:5000" + twibbon.url} twibbonName={twibbon.name} twibbonSlug={slugify(twibbon.name)} />
+        <TwibbonEditor
+          twibbonSrc={`${UPLOAD_API}${twibbon.url}`}
+          twibbonName={twibbon.name}
+          twibbonSlug={slugify(twibbon.name)}
+        />
       </div>
     </div>
   );

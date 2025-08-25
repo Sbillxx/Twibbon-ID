@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
-import TwibbonEditor from "./components/TwibbonEditor";
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import AdminPage from "./components/AdminPage";
 import TwibbonDetail from "./components/TwibbonDetail";
 import AdminLogin from "./components/AdminLogin";
@@ -24,7 +29,12 @@ function TwibbonDescription({ text }) {
   const isLong = text.split("\n").length > 4 || text.length > 200;
   return (
     <>
-      <span className="twibbon-description" style={!expanded && isLong ? lineClampStyle : { whiteSpace: "pre-line" }}>
+      <span
+        className="twibbon-description"
+        style={
+          !expanded && isLong ? lineClampStyle : { whiteSpace: "pre-line" }
+        }
+      >
         {text}
       </span>
       {isLong && (
@@ -57,11 +67,12 @@ function TwibbonDescription({ text }) {
 function AppRoutes() {
   const location = useLocation();
   const [twibbons, setTwibbons] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:5000/api/twibbons")
+    fetch(`${API_URL}/api/twibbons`)
       .then((res) => res.json())
       .then((data) => {
         setTwibbons(data);
@@ -69,7 +80,9 @@ function AppRoutes() {
       });
   }, []);
 
-  const isUserPage = !location.pathname.startsWith("/!/admin") && !location.pathname.startsWith("/!/admin-login");
+  const isUserPage =
+    !location.pathname.startsWith("/!/admin") &&
+    !location.pathname.startsWith("/!/admin-login");
 
   return (
     <>
@@ -90,7 +103,9 @@ function AppRoutes() {
             <div className="App">
               <div className="app-header">
                 <h1 className="app-title">🎭 Twibbon Kami</h1>
-                <p className="app-subtitle">COBAIN DEHH, TWIBBONIZE MAH DAH BAYAR BJIRR😂😂</p>
+                <p className="app-subtitle">
+                  COBAIN DEHH, TWIBBONIZE MAH DAH BAYAR BJIRR😂😂
+                </p>
               </div>
 
               <div className="twibbon-selection">
@@ -100,8 +115,16 @@ function AppRoutes() {
                 ) : (
                   <div className="twibbon-grid">
                     {twibbons.map((twibbon) => (
-                      <Link to={`/${slugify(twibbon.name)}`} key={twibbon.id} className="twibbon-option">
-                        <img src={"http://localhost:5000" + twibbon.url} alt={twibbon.name} className="twibbon-preview" />
+                      <Link
+                        to={`/${slugify(twibbon.name)}`}
+                        key={twibbon.id}
+                        className="twibbon-option"
+                      >
+                        <img
+                          src={`${API_URL}${twibbon.url}`}
+                          alt={twibbon.name}
+                          className="twibbon-preview"
+                        />
                         <div className="twibbon-info">
                           <span className="twibbon-label">{twibbon.name}</span>
                           <TwibbonDescription text={twibbon.description} />
@@ -115,7 +138,10 @@ function AppRoutes() {
               <div className="welcome-message">
                 <div className="welcome-content">
                   <h3>✨ Ayo Mulai</h3>
-                  <p>Silahkan pilih twibbon di atas untuk memulai membuat twibbon sendiri!</p>
+                  <p>
+                    Silahkan pilih twibbon di atas untuk memulai membuat twibbon
+                    sendiri!
+                  </p>
                   <div className="feature-list">
                     <div className="feature-item">
                       <span className="feature-icon">📐</span>

@@ -1,23 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import "./TwibbonEditor.css";
 import { createImage, slugify } from "./utils";
 
-const getCroppedImg = async (imageSrc, cropPixels) => {
-  const image = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  canvas.width = cropPixels.width;
-  canvas.height = cropPixels.height;
-  const ctx = canvas.getContext("2d");
+// const getCroppedImg = async (imageSrc, cropPixels) => {
+//   const image = await createImage(imageSrc);
+//   const canvas = document.createElement("canvas");
+//   canvas.width = cropPixels.width;
+//   canvas.height = cropPixels.height;
+//   const ctx = canvas.getContext("2d");
 
-  ctx.drawImage(image, cropPixels.x, cropPixels.y, cropPixels.width, cropPixels.height, 0, 0, cropPixels.width, cropPixels.height);
+//   ctx.drawImage(image, cropPixels.x, cropPixels.y, cropPixels.width, cropPixels.height, 0, 0, cropPixels.width, cropPixels.height);
 
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(URL.createObjectURL(blob));
-    }, "image/png");
-  });
-};
+//   return new Promise((resolve) => {
+//     canvas.toBlob((blob) => {
+//       resolve(URL.createObjectURL(blob));
+//     }, "image/png");
+//   });
+// };
 
 const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const [imageSrc, setImageSrc] = useState(null);
@@ -27,11 +27,15 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState("");
   const [aspectRatio, setAspectRatio] = useState(1);
-  const [frameDimensions, setFrameDimensions] = useState({ width: 1080, height: 1080 });
+  const [frameDimensions, setFrameDimensions] = useState({
+    width: 1080,
+    height: 1080,
+  });
   const [zoomReady, setZoomReady] = useState(false);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [finalTwibbonUrl, setFinalTwibbonUrl] = useState(null);
   const [copied, setCopied] = useState(false);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   // Detect aspect ratio of twibbon frame
   useEffect(() => {
@@ -41,7 +45,7 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
         setAspectRatio(img.width / img.height);
         setFrameDimensions({ width: img.width, height: img.height });
       };
-      img.src = twibbonSrc;
+      img.src = `${process.env.REACT_APP_UPLOAD_URL}/${twibbonSrc}`;
     };
 
     if (twibbonSrc) detectAspectRatio();
@@ -52,7 +56,10 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
     if (!imageSrc) return;
     const img = new window.Image();
     img.onload = () => {
-      const minZoom = Math.max(frameDimensions.width / img.width, frameDimensions.height / img.height);
+      const minZoom = Math.max(
+        frameDimensions.width / img.width,
+        frameDimensions.height / img.height
+      );
       setZoom(minZoom);
       setZoomReady(true); // trigger crop center
     };
@@ -97,7 +104,17 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
       const image = await createImage(imageSrc);
 
       // 3. Crop bagian yang dipilih user, lalu gambar ke canvas dengan skala penuh
-      ctx.drawImage(image, Math.round(croppedAreaPixels.x), Math.round(croppedAreaPixels.y), Math.round(croppedAreaPixels.width), Math.round(croppedAreaPixels.height), 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(
+        image,
+        Math.round(croppedAreaPixels.x),
+        Math.round(croppedAreaPixels.y),
+        Math.round(croppedAreaPixels.width),
+        Math.round(croppedAreaPixels.height),
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
       // 4. Overlay twibbon frame
       const frameImg = await createImage(twibbonSrc);
@@ -107,7 +124,9 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
       const dataUrl = canvas.toDataURL("image/png");
       setFinalTwibbonUrl(dataUrl);
       const link = document.createElement("a");
-      link.download = `twibbon-${twibbonSlug || (twibbonName ? slugify(twibbonName) : "final")}.png`;
+      link.download = `twibbon-${
+        twibbonSlug || (twibbonName ? slugify(twibbonName) : "final")
+      }.png`;
       link.href = dataUrl;
       link.click();
 
@@ -131,10 +150,18 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
   const shareUrl = window.location.href;
   const shareText = `Cek twibbon keren ini!`;
   function shareToWhatsApp() {
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`,
+      "_blank"
+    );
   }
   function shareToFacebook() {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        shareUrl
+      )}`,
+      "_blank"
+    );
   }
   function shareToInstagram() {
     window.open("https://instagram.com/", "_blank");
@@ -161,11 +188,18 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
         <h2 className="upload-title">🎨 Twibbon Editor</h2>
         <div className="frame-info">
           <span className="frame-dimensions">
-            📐 Frame: {frameDimensions.width}×{frameDimensions.height} ({getAspectRatioLabel()})
+            📐 Frame: {frameDimensions.width}×{frameDimensions.height} (
+            {getAspectRatioLabel()})
           </span>
         </div>
         <div className="file-upload-wrapper">
-          <input type="file" accept="image/*" onChange={handleImageUpload} className="file-upload-input" id="file-upload" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="file-upload-input"
+            id="file-upload"
+          />
           <label htmlFor="file-upload" className="file-upload-button">
             <span className="file-upload-icon">📷</span>
             Choose your photo
@@ -195,8 +229,32 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
             overflow: "hidden",
           }}
         >
-          <Cropper image={imageSrc} crop={crop} zoom={zoom} aspect={aspectRatio} onCropChange={setCrop} onZoomChange={setZoom} onCropComplete={onCropComplete} showGrid={true} />
-          <img src={twibbonSrc} alt="twibbon" className="twibbon-overlay" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", top: 0, left: 0, zIndex: 10, pointerEvents: "none", borderRadius: "17px" }} />
+          <Cropper
+            image={imageSrc}
+            crop={crop}
+            zoom={zoom}
+            aspect={aspectRatio}
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={onCropComplete}
+            showGrid={true}
+          />
+          <img
+            src={twibbonSrc}
+            alt="twibbon"
+            className="twibbon-overlay"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 10,
+              pointerEvents: "none",
+              borderRadius: "17px",
+            }}
+          />
         </div>
       )}
 
@@ -204,11 +262,23 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
         {imageSrc && (
           <div className="zoom-control">
             <label className="zoom-label">🔍 Zoom: {zoom.toFixed(1)}x</label>
-            <input type="range" min={1} max={3} step={0.1} value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="zoom-slider" />
+            <input
+              type="range"
+              min={1}
+              max={3}
+              step={0.1}
+              value={zoom}
+              onChange={(e) => setZoom(parseFloat(e.target.value))}
+              className="zoom-slider"
+            />
           </div>
         )}
 
-        <button onClick={handleDownload} disabled={!imageSrc || !croppedAreaPixels || isLoading} className="download-button">
+        <button
+          onClick={handleDownload}
+          disabled={!imageSrc || !croppedAreaPixels || isLoading}
+          className="download-button"
+        >
           {isLoading ? (
             <>
               <span className="loading"></span>
@@ -224,11 +294,18 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
       {showSharePopup && finalTwibbonUrl && (
         <div className="share-popup-overlay">
           <div className="share-popup">
-            <button className="close-popup" onClick={() => setShowSharePopup(false)}>
+            <button
+              className="close-popup"
+              onClick={() => setShowSharePopup(false)}
+            >
               &times;
             </button>
             <h3>Bagikan Link Twibbon Ini</h3>
-            <img src={finalTwibbonUrl} alt="Hasil Twibbon" className="twibbon-result-preview" />
+            <img
+              src={finalTwibbonUrl}
+              alt="Hasil Twibbon"
+              className="twibbon-result-preview"
+            />
             <div className="share-popup-buttons">
               <button onClick={shareToWhatsApp} className="share-btn wa">
                 WhatsApp
@@ -243,7 +320,10 @@ const TwibbonEditor = ({ twibbonSrc, twibbonName, twibbonSlug }) => {
                 {copied ? "Copied!" : "Copy Link"}
               </button>
             </div>
-            <div className="share-popup-desc">Link yang dibagikan adalah link halaman twibbon ini, bukan file gambar.</div>
+            <div className="share-popup-desc">
+              Link yang dibagikan adalah link halaman twibbon ini, bukan file
+              gambar.
+            </div>
           </div>
         </div>
       )}

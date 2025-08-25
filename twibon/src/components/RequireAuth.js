@@ -6,11 +6,12 @@ function RequireAuth({ children }) {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     async function checkLogin() {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/check", {
+        const res = await fetch(`${API_URL}/api/auth/check`,  {
           credentials: "include",
         });
         const data = await res.json();
